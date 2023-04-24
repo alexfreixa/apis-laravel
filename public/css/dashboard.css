@@ -1,0 +1,91 @@
+/* NAVBAR */
+
+div#navigation-container {
+  margin-left: 3vw;
+}
+
+.navigation-bar {
+  background-color: #67caff;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
+  padding: 0px 5%;
+}
+
+.navigation-bar ul {
+  padding: 0px;
+  margin: 0px;
+}
+
+.navigation-bar li {
+  list-style-type: none;
+  display: inline;
+}
+
+.navigation-bar li a {
+  color: black;
+  font-size: 16px;
+  text-decoration: none;
+  padding: 5px 15px;
+}
+
+/* FI NAVBAR */
+
+
+/* CRUD */
+
+.missatge{
+  background-color: #7b7b7b;
+  color: white;
+  padding: 17px;
+  border-radius: 11px;
+  margin-bottom: 16px;
+}
+
+.correcte {
+  background-color: #6fa16f;
+}
+
+.main-content {
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+.t-desc {
+  text-align: left;
+}
+
+td.t-name {
+  min-width: 210px;
+  text-align: left;
+}
+
+.titol-pagina {
+  margin: 0 auto;
+  width: 90%;
+  text-align: center;
+  font-size: 1.2vw;
+  color: black;
+}
+
+.taula-productes tr {
+  background: #eaeaea;
+  max-width: 400px;
+  margin: 50px auto;
+  text-align: center;
+}
+
+.taula-productes td, .taula-productes th {
+  padding: 0px 16px;
+}
+
+.taula-productes .t-desc{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 400px;
+    padding: 13px;
+    margin: 0 auto;
+    width: 100%;
+}
