@@ -11,7 +11,7 @@ class Product extends Model {
         'product_name',
         'product_description',
         'product_price',
-        'product_images',
+        'product_image',
     ];
 
     public function run(): void

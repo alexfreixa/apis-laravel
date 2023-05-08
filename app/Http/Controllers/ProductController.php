@@ -37,11 +37,14 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function storeOld(Request $request)
     {
         $request->validate([
-            'title' => 'required',
-            'body' => 'required',
+            'product_name' => 'required',
+            'product_description' => 'required',
+            'product_price' => 'required',
+            //'product_image' => ['nullable', 'image', 'max:5000']
+            'product_image' => 'nullable|image|max:5000',
         ]);
 
         $product = Product::create($request->all());
@@ -49,6 +52,18 @@ class ProductController extends Controller
             "status" => 1,
             "data" => $product
         ];
+
+        /*
+        
+            // procesa los datos recibidos en la solicitud HTTP
+    $datos = $request->all();
+    
+    // devuelve una respuesta en formato JSON
+    return response()->json([
+        'mensaje' => 'Formulario enviado correctamente',
+        'datos' => $datos
+    ]);
+        */
     }
 
     /**
@@ -106,10 +121,9 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    //public function destroy(Product $product)
+
     public function destroy($id)
     {
-
         $product = Product::find($id);
         $product->delete();
         return [
@@ -119,4 +133,59 @@ class ProductController extends Controller
         ];
 
     }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'product_name' => 'required',
+            'product_description' => 'required',
+            'product_price' => 'required',
+            'product_image' => 'nullable|image|max:5000000000',
+        ]);
+
+        $product = Product::create($request->all());
+
+        $product = new Product();
+
+        $product->product_name = $request->product_name;
+        $product->product_description = $request->product_description;
+        $product->product_price = $request->product_price;
+        $product->product_image = $request->product_image;
+
+
+        if ($request->hasFile('product_image')) {
+            $imatge = $request->file('product_image');
+            $nomArxiu = $imatge->getClientOriginalName();
+            $imatge->move(public_path('/public/media/images/'), $nomArxiu);
+            $product->product_image = 'public/media/images/' . $nomArxiu;
+        }
+
+        $product->save();
+        
+        return [
+            "status" => 1,
+            "data" => $product,
+            "producte_id" => $product->id,
+            "hasFile" => $request->hasFile('product_image')
+        ];
+
+        /*
+        
+            // procesa los datos recibidos en la solicitud HTTP
+    $datos = $request->all();
+    
+    // devuelve una respuesta en formato JSON
+    return response()->json([
+        'mensaje' => 'Formulario enviado correctamente',
+        'datos' => $datos
+    ]);
+        */
+    }
+
 }

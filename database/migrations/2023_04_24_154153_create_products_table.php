@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('product_name')->nullable();
             $table->text('product_description')->nullable();
             $table->string('product_price')->nullable();
-            $table->text('product_images')->nullable();
+            $table->text('product_image')->nullable();
             $table->timestamps();
         });
     }
