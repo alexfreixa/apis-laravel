@@ -149,8 +149,6 @@ class ProductController extends Controller
             'product_image' => 'nullable|image|max:5000000000',
         ]);
 
-        $product = Product::create($request->all());
-
         $product = new Product();
 
         $product->product_name = $request->product_name;
