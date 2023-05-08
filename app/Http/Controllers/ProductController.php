@@ -43,7 +43,6 @@ class ProductController extends Controller
             'product_name' => 'required',
             'product_description' => 'required',
             'product_price' => 'required',
-            //'product_image' => ['nullable', 'image', 'max:5000']
             'product_image' => 'nullable|image|max:5000',
         ]);
 
@@ -72,11 +71,13 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show(Product $product, Request $request)
     {
         return [
             "status" => 1,
-            "data" => $product
+            "data" => $product,
+            "msg" => "Product updated successfully",
+            "origin" => $request->getSchemeAndHttpHost(),
         ];
     }
 
@@ -101,8 +102,10 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $request->validate([
-            'title' => 'required',
-            'body' => 'required',
+            'product_name' => 'required',
+            'product_description' => 'required',
+            'product_price' => 'required',
+            'product_image' => 'nullable|image|max:5000000000',
         ]);
 
         $product->update($request->all());
@@ -111,7 +114,6 @@ class ProductController extends Controller
             "status" => 1,
             "data" => $product,
             "msg" => "Product updated successfully"
-            
         ];
     }
 
@@ -173,17 +175,6 @@ class ProductController extends Controller
             "hasFile" => $request->hasFile('product_image')
         ];
 
-        /*
-        
-            // procesa los datos recibidos en la solicitud HTTP
-    $datos = $request->all();
-    
-    // devuelve una respuesta en formato JSON
-    return response()->json([
-        'mensaje' => 'Formulario enviado correctamente',
-        'datos' => $datos
-    ]);
-        */
     }
 
 }
