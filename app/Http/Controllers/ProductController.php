@@ -32,40 +32,6 @@ class ProductController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function storeOld(Request $request)
-    {
-        $request->validate([
-            'product_name' => 'required',
-            'product_description' => 'required',
-            'product_price' => 'required',
-            'product_image' => 'nullable|image|max:5000',
-        ]);
-
-        $product = Product::create($request->all());
-        return [
-            "status" => 1,
-            "data" => $product
-        ];
-
-        /*
-        
-            // procesa los datos recibidos en la solicitud HTTP
-    $datos = $request->all();
-    
-    // devuelve una respuesta en formato JSON
-    return response()->json([
-        'mensaje' => 'Formulario enviado correctamente',
-        'datos' => $datos
-    ]);
-        */
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  \App\Models\Product  $product
@@ -149,6 +115,8 @@ class ProductController extends Controller
             'product_description' => 'required',
             'product_price' => 'required',
             'product_image' => 'nullable|image|max:5000000000',
+            'product_extra_images' => 'nullable|array',
+            'product_extra_images.*' => 'image|max:5000000000',
         ]);
 
         $product = new Product();
@@ -156,8 +124,6 @@ class ProductController extends Controller
         $product->product_name = $request->product_name;
         $product->product_description = $request->product_description;
         $product->product_price = $request->product_price;
-        $product->product_image = $request->product_image;
-
 
         if ($request->hasFile('product_image')) {
             $imatge = $request->file('product_image');
@@ -166,15 +132,26 @@ class ProductController extends Controller
             $product->product_image = 'public/media/images/' . $nomArxiu;
         }
 
+        if ($request->hasFile('product_extra_images')) {
+            $imagePaths = [];
+            foreach ($request->file('product_extra_images') as $image) {
+                $nomArxiu = $image->getClientOriginalName();
+                $image->move(public_path('/public/media/images/'), $nomArxiu);
+                $imagePaths[] = 'public/media/images/' . $nomArxiu;
+            }
+            $product->product_extra_images = json_encode($imagePaths);
+        }
+
         $product->save();
-        
+
         return [
             "status" => 1,
             "data" => $product,
             "producte_id" => $product->id,
-            "hasFile" => $request->hasFile('product_image')
+            "hasFile" => $request->hasFile('product_image'),
+            "hasFile" => $request->hasFile('product_extra_images'),
+            "extres" => $product->product_extra_images
         ];
-
     }
 
 }

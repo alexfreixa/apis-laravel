@@ -12,6 +12,11 @@ class Product extends Model {
         'product_description',
         'product_price',
         'product_image',
+        'product_extra_images',
+    ];
+
+    protected $casts = [
+        'product_extra_images' => 'array',
     ];
 
     public function run(): void
