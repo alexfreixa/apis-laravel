@@ -15,9 +15,19 @@ class Product extends Model {
         'product_extra_images',
     ];
 
-    protected $casts = [
+    /*protected $casts = [
         'product_extra_images' => 'array',
-    ];
+    ];*/
+
+    public function images()
+    {
+        return $this->belongsToMany(Image::class);
+    }
+
+    public function mainImage()
+    {
+        return $this->belongsTo(Image::class, 'product_image');
+    }
 
     public function run(): void
     {

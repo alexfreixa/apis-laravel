@@ -12,14 +12,60 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $products = Product::latest()->paginate(10);    
+    
+    /*public function index()
+{
+    $products = Product::with('images')->get();
+    
+    return response()->json([
+        'status' => 1,
+        'data' => $products,
+        'msg' => 'Productes consultats correctament'
+    ]);
+}*/
+
+public function index()
+{
+    $products = Product::with('images')->get();
+    
+    /*$imageData = $products->map(function ($product) {
         return [
-            "status" => 1,
-            "data" => $products
+            'product_id' => $product->id,
+            'image' => $product->images->map(function ($image) {
+                return [
+                    'id' => $image->id,
+                    'name' => $image->image_name,
+                    'file' => $image->image_file,
+                ];
+            }),
         ];
-    }
+    });*/
+
+    $productData = $products->map(function ($product) {
+        return [
+            'id' => $product->id,
+            'product_name' => $product->product_name,
+            'product_description' => $product->product_description,
+            'product_price' => $product->product_price,
+            'product_images' => $product->images->map(function ($image) {
+                return [
+                    'id' => $image->id,
+                    'name' => $image->image_name,
+                    'file' => $image->image_file,
+                ];
+            }),
+        ];
+    });
+    
+
+    return response()->json([
+        'status' => 1,
+        'product_data' => $productData,
+        //'product_imgs' => $imageData,
+        'msg' => 'Productes consultats correctament'
+    ]);
+}
+
 
     /**
      * Show the form for creating a new resource.
@@ -39,10 +85,13 @@ class ProductController extends Controller
      */
     public function show(Product $product, Request $request)
     {
+
+        $product = Product::where('id', $product->id)->with('images')->first();
+
         return [
             "status" => 1,
             "data" => $product,
-            "msg" => "Product updated successfully",
+            "msg" => "Product showing successfully",
             "origin" => $request->getSchemeAndHttpHost(),
         ];
     }
@@ -71,15 +120,17 @@ class ProductController extends Controller
             'product_name' => 'required',
             'product_description' => 'required',
             'product_price' => 'required',
-            'product_image' => 'nullable|image|max:5000000000',
+            //'product_image' => 'nullable|numeric',
         ]);
 
         $product->update($request->all());
 
+        $product->images()->sync($request->input('image_ids', []));
+
         return [
             "status" => 1,
             "data" => $product,
-            "msg" => "Product updated successfully"
+            "msg" => "Producte consultat correctament"
         ];
     }
 
