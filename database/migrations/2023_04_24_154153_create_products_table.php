@@ -17,8 +17,10 @@ return new class extends Migration
             $table->text('product_description')->nullable();
             $table->string('product_price')->nullable();
             $table->text('product_image')->nullable();
-            $table->unsignedBigInteger('product_main_image')->nullable();
             $table->timestamps();
+
+            $table->unsignedBigInteger('product_main_image')->nullable();
+            $table->foreign('product_main_image')->references('id')->on('images')->onDelete('set null');
         });
 
     }
@@ -28,6 +30,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('products', function (Blueprint $table) {
+            $table->dropForeign(['product_main_image']);
+        });
+        
         Schema::dropIfExists('products');
     }
 };

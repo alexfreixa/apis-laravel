@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Image;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -24,22 +25,9 @@ class ProductController extends Controller
     ]);
 }*/
 
-public function index()
+public function index(Request $request)
 {
     $products = Product::with('images')->get();
-    
-    /*$imageData = $products->map(function ($product) {
-        return [
-            'product_id' => $product->id,
-            'image' => $product->images->map(function ($image) {
-                return [
-                    'id' => $image->id,
-                    'name' => $image->image_name,
-                    'file' => $image->image_file,
-                ];
-            }),
-        ];
-    });*/
 
     $productData = $products->map(function ($product) {
         return [
@@ -47,6 +35,11 @@ public function index()
             'product_name' => $product->product_name,
             'product_description' => $product->product_description,
             'product_price' => $product->product_price,
+            'product_main_image' => [
+                'id' => $product->mainImage->id,
+                'name' => $product->mainImage->image_name,
+                'file' => $product->mainImage->image_file,
+            ],
             'product_images' => $product->images->map(function ($image) {
                 return [
                     'id' => $image->id,
@@ -61,8 +54,8 @@ public function index()
     return response()->json([
         'status' => 1,
         'product_data' => $productData,
-        //'product_imgs' => $imageData,
-        'msg' => 'Productes consultats correctament'
+        'msg' => 'Productes consultats correctament',
+        'origin' => $request->getSchemeAndHttpHost(),
     ]);
 }
 

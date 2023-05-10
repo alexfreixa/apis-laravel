@@ -10,14 +10,8 @@ class Product extends Model {
     protected $fillable = [
         'product_name',
         'product_description',
-        'product_price',
-        'product_image',
-        'product_extra_images',
+        'product_price'
     ];
-
-    /*protected $casts = [
-        'product_extra_images' => 'array',
-    ];*/
 
     public function images()
     {
@@ -26,7 +20,7 @@ class Product extends Model {
 
     public function mainImage()
     {
-        return $this->belongsTo(Image::class, 'product_image');
+        return $this->belongsTo(Image::class, 'product_main_image');
     }
 
     public function run(): void
