@@ -14,18 +14,7 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     
-    /*public function index()
-{
-    $products = Product::with('images')->get();
-    
-    return response()->json([
-        'status' => 1,
-        'data' => $products,
-        'msg' => 'Productes consultats correctament'
-    ]);
-}*/
-
-public function index(Request $request)
+    public function index(Request $request)
 {
     $products = Product::with('images')->get();
 
@@ -81,12 +70,41 @@ public function index(Request $request)
 
         $product = Product::where('id', $product->id)->with('images')->first();
 
-        return [
+    $productData = [
+        'id' => $product->id,
+        'product_name' => $product->product_name,
+        'product_description' => $product->product_description,
+        'product_price' => $product->product_price,
+        'product_main_image' => [
+            'id' => $product->mainImage->id,
+            'name' => $product->mainImage->image_name,
+            'file' => $product->mainImage->image_file,
+        ],
+        'product_images' => $product->images->map(function ($image) {
+            return [
+                'id' => $image->id,
+                'name' => $image->image_name,
+                'file' => $image->image_file,
+            ];
+        }),
+    ];
+    
+
+        return response()->json([
+            'status' => 1,
+            'product_data' => $productData,
+            'msg' => 'Productes consultats correctament',
+            'origin' => $request->getSchemeAndHttpHost(),
+        ]);
+
+        /*return [
             "status" => 1,
             "data" => $product,
             "msg" => "Product showing successfully",
             "origin" => $request->getSchemeAndHttpHost(),
-        ];
+        ];*/
+
+        
     }
 
     /**
