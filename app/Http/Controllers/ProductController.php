@@ -24,11 +24,16 @@ class ProductController extends Controller
             'product_name' => $product->product_name,
             'product_description' => $product->product_description,
             'product_price' => $product->product_price,
-            'product_main_image' => [
+            /*'product_main_image' => [
                 'id' => $product->mainImage->id,
                 'name' => $product->mainImage->image_name,
                 'file' => $product->mainImage->image_file,
-            ],
+            ],*/
+            'product_main_image' => $product->mainImage ? [
+                'id' => $product->mainImage->id,
+                'name' => $product->mainImage->image_name,
+                'file' => $product->mainImage->image_file,
+            ] : null,
             'product_images' => $product->images->map(function ($image) {
                 return [
                     'id' => $image->id,
@@ -175,10 +180,10 @@ class ProductController extends Controller
         $request->validate([
             'product_name' => 'required',
             'product_description' => 'required',
-            'product_price' => 'required',
+            'product_price' => 'required'/*,
             'product_image' => 'nullable|image|max:5000000000',
             'product_extra_images' => 'nullable|array',
-            'product_extra_images.*' => 'image|max:5000000000',
+            'product_extra_images.*' => 'image|max:5000000000',*/
         ]);
 
         $product = new Product();

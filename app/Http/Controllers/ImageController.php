@@ -14,7 +14,7 @@ class ImageController extends Controller
      */
     public function index(Request $request)
     {
-        $images = Image::latest()->paginate(10);    
+        $images = Image::latest()->get();    
         return [
             "status" => 1,
             "data" => $images,
