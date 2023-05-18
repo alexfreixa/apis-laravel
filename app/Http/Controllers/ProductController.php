@@ -28,22 +28,7 @@ class ProductController extends Controller
                 'id' => $product->mainImage->id,
                 'name' => $product->mainImage->image_name,
                 'file' => $product->mainImage->image_file,
-            ] : null,
-            'product_image_1' => $product->image1 ? [
-                'id' => $product->image1->id,
-                'name' => $product->image1->image_name,
-                'file' => $product->image1->image_file,
-            ] : null,
-            'product_image_2' => $product->image2 ? [
-                'id' => $product->image2->id,
-                'name' => $product->image2->image_name,
-                'file' => $product->image2->image_file,
-            ] : null,
-            'product_image_3' => $product->image3 ? [
-                'id' => $product->image3->id,
-                'name' => $product->image3->image_name,
-                'file' => $product->image3->image_file,
-            ] : null,
+            ] : null
         ];
     });
     
@@ -76,7 +61,7 @@ class ProductController extends Controller
     public function show(Product $product, Request $request)
     {
 
-        $product = Product::where('id', $product->id)->with('images')->first();
+    $product = Product::where('id', $product->id)->with('images')->first();
 
     $productData = [
         'id' => $product->id,
@@ -105,7 +90,6 @@ class ProductController extends Controller
         ] : null,
     ];
     
-
         return response()->json([
             'status' => 1,
             'product_data' => $productData,
@@ -209,9 +193,6 @@ class ProductController extends Controller
             "status" => 1,
             "data" => $product,
             "producte_id" => $product->id,
-            "hasFile" => $request->hasFile('product_main_image'),
-            /*"campMainImatge" => $request->product_main_image,
-            "requestSencera" => $request,*/
             "extres" => $product->product_extra_images
         ];
     }
