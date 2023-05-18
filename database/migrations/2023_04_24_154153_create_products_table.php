@@ -16,11 +16,15 @@ return new class extends Migration
             $table->string('product_name')->nullable();
             $table->text('product_description')->nullable();
             $table->string('product_price')->nullable();
-            $table->text('product_image')->nullable();
             $table->timestamps();
 
             $table->unsignedBigInteger('product_main_image')->nullable();
             $table->foreign('product_main_image')->references('id')->on('images')->onDelete('set null');
+
+            $table->string('product_image_1')->nullable();
+            $table->string('product_image_2')->nullable();
+            $table->string('product_image_3')->nullable();
+
         });
 
     }

@@ -24,23 +24,26 @@ class ProductController extends Controller
             'product_name' => $product->product_name,
             'product_description' => $product->product_description,
             'product_price' => $product->product_price,
-            /*'product_main_image' => [
-                'id' => $product->mainImage->id,
-                'name' => $product->mainImage->image_name,
-                'file' => $product->mainImage->image_file,
-            ],*/
             'product_main_image' => $product->mainImage ? [
                 'id' => $product->mainImage->id,
                 'name' => $product->mainImage->image_name,
                 'file' => $product->mainImage->image_file,
             ] : null,
-            'product_images' => $product->images->map(function ($image) {
-                return [
-                    'id' => $image->id,
-                    'name' => $image->image_name,
-                    'file' => $image->image_file,
-                ];
-            }),
+            'product_image_1' => $product->image1 ? [
+                'id' => $product->image1->id,
+                'name' => $product->image1->image_name,
+                'file' => $product->image1->image_file,
+            ] : null,
+            'product_image_2' => $product->image2 ? [
+                'id' => $product->image2->id,
+                'name' => $product->image2->image_name,
+                'file' => $product->image2->image_file,
+            ] : null,
+            'product_image_3' => $product->image3 ? [
+                'id' => $product->image3->id,
+                'name' => $product->image3->image_name,
+                'file' => $product->image3->image_file,
+            ] : null,
         ];
     });
     
@@ -80,18 +83,26 @@ class ProductController extends Controller
         'product_name' => $product->product_name,
         'product_description' => $product->product_description,
         'product_price' => $product->product_price,
-        'product_main_image' => [
+        'product_main_image' => $product->mainImage ? [
             'id' => $product->mainImage->id,
             'name' => $product->mainImage->image_name,
             'file' => $product->mainImage->image_file,
-        ],
-        'product_images' => $product->images->map(function ($image) {
-            return [
-                'id' => $image->id,
-                'name' => $image->image_name,
-                'file' => $image->image_file,
-            ];
-        }),
+        ] : null,
+        'product_image_1' => $product->image1 ? [
+            'id' => $product->image1->id,
+            'name' => $product->image1->image_name,
+            'file' => $product->image1->image_file,
+        ] : null,
+        'product_image_2' => $product->image2 ? [
+            'id' => $product->image2->id,
+            'name' => $product->image2->image_name,
+            'file' => $product->image2->image_file,
+        ] : null,
+        'product_image_3' => $product->image3 ? [
+            'id' => $product->image3->id,
+            'name' => $product->image3->image_name,
+            'file' => $product->image3->image_file,
+        ] : null,
     ];
     
 
@@ -101,14 +112,6 @@ class ProductController extends Controller
             'msg' => 'Productes consultats correctament',
             'origin' => $request->getSchemeAndHttpHost(),
         ]);
-
-        /*return [
-            "status" => 1,
-            "data" => $product,
-            "msg" => "Product showing successfully",
-            "origin" => $request->getSchemeAndHttpHost(),
-        ];*/
-
         
     }
 
@@ -136,7 +139,10 @@ class ProductController extends Controller
             'product_name' => 'required',
             'product_description' => 'required',
             'product_price' => 'required',
-            //'product_image' => 'nullable|numeric',
+            'product_main_image' => 'numeric|nullable',
+            'product_image_1' => 'numeric|nullable',
+            'product_image_2' => 'numeric|nullable',
+            'product_image_3' => 'numeric|nullable',
         ]);
 
         $product->update($request->all());
@@ -180,10 +186,11 @@ class ProductController extends Controller
         $request->validate([
             'product_name' => 'required',
             'product_description' => 'required',
-            'product_price' => 'required'/*,
-            'product_image' => 'nullable|image|max:5000000000',
-            'product_extra_images' => 'nullable|array',
-            'product_extra_images.*' => 'image|max:5000000000',*/
+            'product_price' => 'required',
+            'product_main_image' => 'numeric|nullable',
+            'product_image_1' => 'numeric|nullable',
+            'product_image_2' => 'numeric|nullable',
+            'product_image_3' => 'numeric|nullable',
         ]);
 
         $product = new Product();
@@ -191,23 +198,10 @@ class ProductController extends Controller
         $product->product_name = $request->product_name;
         $product->product_description = $request->product_description;
         $product->product_price = $request->product_price;
-
-        if ($request->hasFile('product_image')) {
-            $imatge = $request->file('product_image');
-            $nomArxiu = $imatge->getClientOriginalName();
-            $imatge->move(public_path('/public/media/images/'), $nomArxiu);
-            $product->product_image = 'public/media/images/' . $nomArxiu;
-        }
-
-        if ($request->hasFile('product_extra_images')) {
-            $imagePaths = [];
-            foreach ($request->file('product_extra_images') as $image) {
-                $nomArxiu = $image->getClientOriginalName();
-                $image->move(public_path('/public/media/images/'), $nomArxiu);
-                $imagePaths[] = 'public/media/images/' . $nomArxiu;
-            }
-            $product->product_extra_images = json_encode($imagePaths);
-        }
+        $product->product_main_image = $request->product_main_image;
+        $product->product_image_1 = $request->product_image_1;
+        $product->product_image_2 = $request->product_image_2;
+        $product->product_image_3 = $request->product_image_3;
 
         $product->save();
 
@@ -215,8 +209,9 @@ class ProductController extends Controller
             "status" => 1,
             "data" => $product,
             "producte_id" => $product->id,
-            "hasFile" => $request->hasFile('product_image'),
-            "hasFile" => $request->hasFile('product_extra_images'),
+            "hasFile" => $request->hasFile('product_main_image'),
+            /*"campMainImatge" => $request->product_main_image,
+            "requestSencera" => $request,*/
             "extres" => $product->product_extra_images
         ];
     }

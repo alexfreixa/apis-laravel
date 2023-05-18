@@ -16,6 +16,11 @@ class Image extends Model {
         return $this->belongsToMany(Product::class)->withTimestamps();
     }
 
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
     public function run(): void
     {
         //Image::factory()->count(10)->create();
