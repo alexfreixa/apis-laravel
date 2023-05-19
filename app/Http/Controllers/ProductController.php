@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Image;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+
 
 class ProductController extends Controller
 {
@@ -40,17 +42,6 @@ class ProductController extends Controller
         'origin' => $request->getSchemeAndHttpHost(),
     ]);
 }
-
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Display the specified resource.
@@ -100,26 +91,19 @@ class ProductController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Product $product)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, $id)
     {
-        $request->validate([
+
+        $product = Product::find($id);
+
+        $producte_validat = $request->validate([
+            'product_id' => 'required|numeric',
             'product_name' => 'required',
             'product_description' => 'required',
             'product_price' => 'required',
@@ -129,14 +113,26 @@ class ProductController extends Controller
             'product_image_3' => 'numeric|nullable',
         ]);
 
-        $product->update($request->all());
+        //$product->id = $producte_validat('product_id');
+        $product->product_name = $producte_validat['product_name'];
+        $product->product_description = $producte_validat['product_description'];
+        $product->product_price = $producte_validat['product_price'];
+        $product->product_main_image = $producte_validat['product_main_image'];
+        $product->product_image_1 = $producte_validat['product_image_1'];
+        $product->product_image_2 = $producte_validat['product_image_2'];
+        $product->product_image_3 = $producte_validat['product_image_3'];
 
-        $product->images()->sync($request->input('image_ids', []));
+        $product->save();
+
+        //$input = $request->all();
+
+        //$product = Product::where('id',$request->product_id)->update($input);
+
+        //return $student;
 
         return [
             "status" => 1,
-            "data" => $product,
-            "msg" => "Producte consultat correctament"
+            "missatge" => $request->all()
         ];
     }
 
