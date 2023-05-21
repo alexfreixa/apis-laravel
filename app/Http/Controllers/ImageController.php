@@ -23,16 +23,6 @@ class ImageController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  \App\Models\Image  $image
@@ -44,39 +34,6 @@ class ImageController extends Controller
             "status" => 1,
             "data" => $image,
             "origin" => $request->getSchemeAndHttpHost(),
-        ];
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Image  $image
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Image $image)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Image  $image
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Image $image)
-    {
-        $request->validate([
-            'image_file' => 'nullable|image|max:5000000000',
-        ]);
-
-        $image->update($request->all());
-
-        return [
-            "status" => 1,
-            "data" => $image,
-            "msg" => "Image updated successfully"
         ];
     }
 
@@ -102,7 +59,7 @@ class ImageController extends Controller
             return [
                 "status" => 1,
                 "data" => $image,
-                "msg" => "Image deleted successfully"
+                "msg" => "Imatge eliminada correctament."
             ];
 
         }
@@ -116,7 +73,7 @@ class ImageController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'image_file' => 'nullable|image|max:5000000000'
+            'image_file' => 'nullable|image|max:10000'
         ]);
 
         $image = new Image();

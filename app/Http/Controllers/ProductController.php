@@ -193,4 +193,20 @@ class ProductController extends Controller
         ];
     }
 
+    public function buscarPerNom(Request $request)
+    {
+        $cerca = $request->input('cerca');
+    
+        $results = Product::where('product_name', 'LIKE', $cerca . '%')
+                    ->orWhere('product_name', 'LIKE', '%' . $cerca . '%')
+                    ->get();
+    
+        return [
+            "status" => 1,
+            "data" => $results,
+            "cerca" => $cerca
+        ];
+
+    }
+    
 }

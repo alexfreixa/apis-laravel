@@ -21,5 +21,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/products/buscar', [ProductController::class, 'buscarPerNom']);
+
 Route::resource('products', ProductController::class);
 Route::resource('images', ImageController::class);
+
+
