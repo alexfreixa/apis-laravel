@@ -34,7 +34,6 @@ class ProductController extends Controller
         ];
     });
     
-
     return response()->json([
         'status' => 1,
         'product_data' => $productData,
@@ -113,7 +112,6 @@ class ProductController extends Controller
             'product_image_3' => 'numeric|nullable',
         ]);
 
-        //$product->id = $producte_validat('product_id');
         $product->product_name = $producte_validat['product_name'];
         $product->product_description = $producte_validat['product_description'];
         $product->product_price = $producte_validat['product_price'];
@@ -123,12 +121,6 @@ class ProductController extends Controller
         $product->product_image_3 = $producte_validat['product_image_3'];
 
         $product->save();
-
-        //$input = $request->all();
-
-        //$product = Product::where('id',$request->product_id)->update($input);
-
-        //return $student;
 
         return [
             "status" => 1,
@@ -195,18 +187,35 @@ class ProductController extends Controller
 
     public function buscarPerNom(Request $request)
     {
-        $cerca = $request->input('cerca');
-    
-        $results = Product::where('product_name', 'LIKE', $cerca . '%')
-                    ->orWhere('product_name', 'LIKE', '%' . $cerca . '%')
-                    ->get();
-    
+
+    $cerca = $request->input('cerca');
+
+    $results = Product::with('images')
+                ->where('product_name', 'LIKE', $cerca . '%')
+                ->orWhere('product_name', 'LIKE', '%' . $cerca . '%')
+                ->get();
+
+    $productData = $results->map(function ($product) {
         return [
-            "status" => 1,
-            "data" => $results,
-            "cerca" => $cerca
+            'id' => $product->id,
+            'product_name' => $product->product_name,
+            'product_description' => $product->product_description,
+            'product_price' => $product->product_price,
+            'product_main_image' => $product->mainImage ? [
+                'id' => $product->mainImage->id,
+                'name' => $product->mainImage->image_name,
+                'file' => $product->mainImage->image_file,
+            ] : null
         ];
+    });
+
+    return [
+        "status" => 1,
+        'product_data' => $productData,
+        "cerca" => $cerca,
+        'origin' => $request->getSchemeAndHttpHost(),
+    ];
 
     }
-    
+
 }
